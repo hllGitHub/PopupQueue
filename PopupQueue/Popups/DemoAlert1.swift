@@ -26,6 +26,10 @@ class DemoAlert1: PopupRequirement {
   var container: PopContainer?
 
   func show() {
+    guard popupStatus == .willShow else {
+      return
+    }
+
     guard let topMost = UIViewController.topMost else {
       return
     }
@@ -39,7 +43,5 @@ class DemoAlert1: PopupRequirement {
     topMost.present(alertController, animated: true) {
       self.popupStatus = .showing
     }
-//    topMost.present(alert, animated: true, completion: nil)
-//    popupStatus = .showing
   }
 }

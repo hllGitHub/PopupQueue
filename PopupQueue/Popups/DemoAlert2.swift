@@ -35,6 +35,10 @@ class DemoAlert2: PopupRequirement {
 
 extension DemoAlert2 {
   func showAlert() {
+    guard popupStatus == .willShow else {
+      return
+    }
+    
     guard let topMost = UIViewController.topMost else {
       return
     }
