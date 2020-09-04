@@ -4,6 +4,11 @@
 * 使用 Swift
 * iOS 10.0， Swift 4.0+
 
+## Using CocoaPods
+``` ruby
+pod 'JHPopupQueue'
+```
+
 ## Doc
 
 #### PopupRequirement
