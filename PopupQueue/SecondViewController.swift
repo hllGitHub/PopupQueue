@@ -19,8 +19,8 @@ class SecondViewController: UIViewController {
     PopupManager.shared.poll()
   }
 
-  override func viewDidDisappear(_ animated: Bool) {
-    super.viewDidDisappear(animated)
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
 
     PopupManager.shared.pause()
   }

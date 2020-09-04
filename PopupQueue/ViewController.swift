@@ -18,11 +18,6 @@ class ViewController: UIViewController {
     DispatchQueue.main.async {
       self.registerPopups()
     }
-
-    // Mock
-//    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-//      self.tabBarController?.selectedIndex = 1
-//    }
   }
 
   override func viewDidAppear(_ animated: Bool) {
@@ -31,8 +26,8 @@ class ViewController: UIViewController {
     PopupManager.shared.poll()
   }
 
-  override func viewDidDisappear(_ animated: Bool) {
-    super.viewDidDisappear(animated)
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
 
     PopupManager.shared.pause()
   }
