@@ -96,7 +96,7 @@ class DemoAlert1: PopupRequirement {
 ### 2. 注册加入 PopupQueue 
 
 ``` swift
-    PopupManager.shared.register(popup: DemoAlert1(), in: .viewController(container: self))
+PopupManager.shared.register(popup: DemoAlert1(), in: .viewController(container: self))
 ```
 
 ### 3. 结束弹框事件
