@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		00247E3B25FE36F000A3E2CB /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00247E3A25FE36F000A3E2CB /* Queue.swift */; };
+		00247E3F25FE3AF000A3E2CB /* PopupLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00247E3E25FE3AF000A3E2CB /* PopupLog.swift */; };
 		236C7B0F24FDFC7A00BA9238 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236C7B0E24FDFC7A00BA9238 /* AppDelegate.swift */; };
 		236C7B1124FDFC7A00BA9238 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236C7B1024FDFC7A00BA9238 /* SceneDelegate.swift */; };
 		236C7B1324FDFC7A00BA9238 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236C7B1224FDFC7A00BA9238 /* ViewController.swift */; };
@@ -33,6 +35,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		00247E3A25FE36F000A3E2CB /* Queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
+		00247E3E25FE3AF000A3E2CB /* PopupLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupLog.swift; sourceTree = "<group>"; };
 		236C7B0B24FDFC7A00BA9238 /* PopupQueue.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PopupQueue.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		236C7B0E24FDFC7A00BA9238 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		236C7B1024FDFC7A00BA9238 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -118,6 +122,8 @@
 			isa = PBXGroup;
 			children = (
 				236C7B3924FF30DF00BA9238 /* Extension.swift */,
+				00247E3A25FE36F000A3E2CB /* Queue.swift */,
+				00247E3E25FE3AF000A3E2CB /* PopupLog.swift */,
 				236C7B3A24FF30DF00BA9238 /* PopupQueue.swift */,
 			);
 			path = Source;
@@ -239,7 +245,9 @@
 				236C7B1124FDFC7A00BA9238 /* SceneDelegate.swift in Sources */,
 				236C7B4524FF3A7E00BA9238 /* SecondViewController.swift in Sources */,
 				236C7B4324FF396B00BA9238 /* DemoAlert3.swift in Sources */,
+				00247E3B25FE36F000A3E2CB /* Queue.swift in Sources */,
 				236C7B3F24FF32C300BA9238 /* DemoAlert1.swift in Sources */,
+				00247E3F25FE3AF000A3E2CB /* PopupLog.swift in Sources */,
 				236C7B4124FF37B600BA9238 /* DemoAlert2.swift in Sources */,
 				236C7B3B24FF30DF00BA9238 /* Extension.swift in Sources */,
 				236C7B3C24FF30DF00BA9238 /* PopupQueue.swift in Sources */,

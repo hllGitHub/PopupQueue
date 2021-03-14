@@ -9,57 +9,6 @@
 import UIKit
 import Foundation
 
-public struct Queue<T> {
-  private var rwLock = os_unfair_lock_s()
-
-  var array = [T]()
-  public var isEmpty: Bool {
-    return array.isEmpty
-  }
-  public var count: Int {
-    return array.count
-  }
-  public mutating func enqueue(_ element: T, by areInIncreasingOrder: (T, T) throws -> Bool, exceptFirst: Bool) {
-    enqueue(element)
-
-    os_unfair_lock_lock(&rwLock)
-    if exceptFirst && array.count > 1 {
-      let array1 = array[0...0]
-      var array2 = array[1...array.count - 1]
-      try? array2.sort(by: areInIncreasingOrder)
-      array = Array(array1) + Array(array2)
-    } else {
-      try? array.sort(by: areInIncreasingOrder)
-    }
-    os_unfair_lock_unlock(&rwLock)
-  }
-  public mutating func enqueue(_ element: T) {
-    os_unfair_lock_lock(&rwLock)
-    array.append(element)
-    os_unfair_lock_unlock(&rwLock)
-  }
-  public mutating func dequeue() -> T? {
-    if isEmpty {
-      return nil
-    } else {
-      return array.removeFirst()
-    }
-  }
-  public mutating func dequeue(at index: Int) -> T? {
-    if isEmpty || index > array.count - 1 {
-      return nil
-    } else {
-      os_unfair_lock_lock(&rwLock)
-      let element = array.remove(at: index)
-      os_unfair_lock_unlock(&rwLock)
-      return element
-    }
-  }
-  public var front: T? {
-    return array.first
-  }
-}
-
 public enum PopContainer {
   case viewController(container: UIViewController)
   case window
@@ -83,7 +32,6 @@ public protocol PopupRequirement {
 }
 
 public class PopupManager {
-  static let logTag = "PopupManager"
   public static var shared = PopupManager()
 
   /// Config
@@ -99,9 +47,9 @@ public class PopupManager {
   }
 
   private func show(popup: PopupRequirement) {
-    print("\(popup.popupName) will show.", PopupManager.logTag)
+    PopupLog.default.log("\(popup.popupName) will show.")
     guard popup.popupStatus == .ready || popup.selfMaintain else {
-      print("\(popup.popupName) can not show repeatedly.", PopupManager.logTag)
+      PopupLog.default.log("\(popup.popupName) can not show repeatedly.")
       return
     }
 
@@ -111,11 +59,11 @@ public class PopupManager {
     switch popup.container {
       case .window, .none:
         popup.show()
-        print("\(popup.popupName) showing.", PopupManager.logTag)
+        PopupLog.default.log("\(popup.popupName) showing.")
       case let .viewController(container):
         if UIViewController.topMost == container {
           popup.show()
-          print("\(popup.popupName) showing.", PopupManager.logTag)
+          PopupLog.default.log("\(popup.popupName) showing.")
           return
       }
     }
@@ -128,18 +76,16 @@ public class PopupManager {
     var popup = queue.array[index]
     popup.popupStatus = .over
     _ = queue.dequeue(at: index)
-    print("\(popup.popupName) has been cleared.", PopupManager.logTag)
+    PopupLog.default.log("\(popup.popupName) has been cleared.")
   }
 }
 
 extension PopupManager {
   public func register(popup: PopupRequirement, in container: PopContainer) {
-    print("Popup \(popup.popupName) is registering", PopupManager.logTag)
-
-    if queue.array.first(where: { (popupItem) -> Bool in
-      return popupItem.popupName == popup.popupName
-    }) != nil {
-      print("Popup \(popup.popupName) has registered", PopupManager.logTag)
+    PopupLog.default.log("Popup \(popup.popupName) is registering")
+    
+    for popupItem in queue.array where popupItem.popupName == popup.popupName {
+      PopupLog.default.log("Popup \(popup.popupName) has registered")
       return
     }
 
@@ -148,13 +94,13 @@ extension PopupManager {
     popup.popupStatus = .ready
     if queue.front?.popupStatus == .showing || queue.front?.popupStatus == .willShow {
       addQueue(popup: popup, exceptFirst: true)
-      print("\(String(describing:queue.front?.popupName)) is showing, \(popup.popupName) add into queue.", PopupManager.logTag)
+      PopupLog.default.log("\(String(describing:queue.front?.popupName)) is showing, \(popup.popupName) add into queue.")
     } else {
       addQueue(popup: popup)
-      print("\(popup.popupName) add into queue.", PopupManager.logTag)
+      PopupLog.default.log("\(popup.popupName) add into queue.")
     }
 
-    print("Popup queue front popup \(String(describing:queue.front?.popupName)) status is \(String(describing:queue.front?.popupStatus)).", PopupManager.logTag)
+    PopupLog.default.log("Popup queue front popup \(String(describing:queue.front?.popupName)) status is \(String(describing:queue.front?.popupStatus)).")
     // Show popup when the front not showing
     if queue.front?.popupStatus == .ready && autoPollWhenRegistered {
       show()
@@ -168,7 +114,7 @@ extension PopupManager {
   // 开始 show
   public func show() {
     guard let popup = queue.front else {
-      print("No popup will show.", PopupManager.logTag)
+      PopupLog.default.log("No popup will show.")
       return
     }
 
@@ -188,7 +134,7 @@ extension PopupManager {
 
   // 重置
   public func pause() {
-    print("PopupManager pause", PopupManager.logTag)
+    PopupLog.default.log("PopupManager pause")
 
     guard var popup = currentPopup?.popup, !popup.selfMaintain else {
       return
@@ -201,9 +147,12 @@ extension PopupManager {
 
   // 轮询遍历
   public func poll() {
-    print("Start poll popups.", PopupManager.logTag)
+    PopupLog.default.log("Start poll popups.")
 
-    guard let popup = currentPopup?.popup, popup.popupStatus != .showing, popup.popupStatus != .willShow else {
+    guard
+      let popup = currentPopup?.popup,
+      popup.popupStatus != .showing,
+      popup.popupStatus != .willShow else {
       return
     }
 
@@ -215,12 +164,8 @@ extension PopupManager {
           if popup.popupStatus == .ready {
             popup.popupStatus = .willShow
           }
-          popup.show()
-          if popup.popupName != currentPopup?.popup.popupName {
-            currentPopup?.popup.popupStatus = .ready
-          }
-
           currentPopup = (index, popup)
+          popup.show()
         }
         return
       case let .viewController(container):
@@ -229,15 +174,15 @@ extension PopupManager {
             if popup.popupStatus == .ready {
               popup.popupStatus = .willShow
             }
-            popup.show()
             currentPopup = (index, popup)
+            popup.show()
           }
           return
         }
       }
     }
 
-    print("No popup will show when poll.", PopupManager.logTag)
+    PopupLog.default.log("No popup will show when poll.")
   }
 }
 
