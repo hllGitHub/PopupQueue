@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = "JHPopupQueue"
-  spec.version      = "0.0.1beta"
+  spec.version      = "0.0.2beta"
   spec.summary      = "弹框事件队列管理"
   spec.description  = "这个库提供了一个queue，去根据优先级以及页面需要管理各个弹框事件，实现自动化，并且有效解决了各个事件之间的冲突"
 
